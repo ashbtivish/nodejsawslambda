@@ -1,0 +1,35 @@
+# filename: serverless.yml
+service: nodejsapp
+
+# The `provider` block defines where your service will be deployed
+custom:
+  bucket: "cicdnodejs123"
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-west-2
+  stackName: testhelloworld
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource:
+        - "arn:aws:s3:::${self:custom.bucket}/*"
+
+# The `functions` block defines what code to deploy
+# The `functions` block defines what code to deploy
+functions:
+  helloWorld:
+    handler: handler.helloWorld
+    # The `events` block defines how to trigger the handler.helloWorld code
+    events:
+      - http:
+          path: hello-world
+          method: get
+          cors: true
+resources:
+  Resources:
+    StorageBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: ${self:custom.bucket}
