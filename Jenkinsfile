@@ -12,8 +12,7 @@ timestamps {
 			sh '''
 				/opt/scanner/bin/sonar-scanner \
   -Dsonar.projectKey=nodejssample \
-  -Dsonar.sources=. \
-  -Dsonar.host.url=http://104.42.178.68:8080
+  -Dsonar.sources=.
 			'''
 		}
     }
