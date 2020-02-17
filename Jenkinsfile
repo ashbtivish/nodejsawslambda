@@ -1,9 +1,20 @@
-node {
-  def runSonarScan(nodejssample){
-      withEnv(['SONAR_HOST=' + '']) {
-          sh '''
-          $/opt/sonarqube/sonar-runner-2.4/bin/sonar-runner -e -Dsonar.projectkey=nodejssample
-          '''
-      }
-  }
+timestamps {
+    node () {
+		stage('Clean up Workspace') {
+			deleteDir()
+		}	    
+        	
+	    stage ('CloneGitHub Repository') {
+        	checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/ashbtivish/nodejsawslambda.git']]]) 
+        }
+
+		stage ('SonarQube Scanner') {
+			sh '''
+				/opt/scanner/bin/sonar-scanner \
+  -Dsonar.projectKey=nodejssample \
+  -Dsonar.sources=. \
+  -Dsonar.host.url=http://104.42.178.68:8080
+			'''
+		}
+    }
 }
