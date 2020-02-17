@@ -12,3 +12,5 @@ serverless config credentials --provider aws --key '<AccessKey>' --secret '<Secr
  
 4. Depoy the package using
 serverless deploy
+
+------------------------------------------------------------------------------------------------------------------
