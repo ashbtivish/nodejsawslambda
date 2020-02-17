@@ -15,5 +15,9 @@ timestamps {
   -Dsonar.sources=.
 			'''
 		}
+		
+		stage ('Packaging Application') {
+		    sh "serverless deploy"
+		}
     }
 }
