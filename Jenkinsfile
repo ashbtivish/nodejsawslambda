@@ -1,8 +1,5 @@
 timestamps {
-    node () {
-		stage('Clean up Workspace') {
-			deleteDir()
-		}	    
+    node () {    
         	
 	    stage ('CloneGitHub Repository') {
         	checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/ashbtivish/nodejsawslambda.git']]]) 
