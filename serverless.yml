@@ -1,11 +1,12 @@
 # filename: serverless.yml
-service: nodejsapp
+service: nodejsawslambda
 
 # The `provider` block defines where your service will be deployed
 custom:
-  bucket: "cicdnodejs123"
+  bucket: "nodejsawslambdaartifact"
 provider:
   name: aws
+  stage: UAT
   runtime: nodejs12.x
   region: us-west-2
   stackName: testhelloworld
@@ -15,6 +16,11 @@ provider:
         - "s3:PutObject"
       Resource:
         - "arn:aws:s3:::${self:custom.bucket}/*"
+  s3:
+    bucket:
+      name: ${self:custom.bucket}
+      existing: true
+      # Eventual additional properties in camel case
 
 # The `functions` block defines what code to deploy
 # The `functions` block defines what code to deploy
