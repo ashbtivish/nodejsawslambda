@@ -6,23 +6,19 @@ custom:
   bucket: "nodejsawslambdaartifact"
 provider:
   name: aws
-  stage: UAT
+  stage: ${opt:stage}
   runtime: nodejs12.x
   region: us-west-2
-  stackName: testhelloworld
+  stackName: ${opt:stackName}
+  deploymentBucket: ${opt:bucketName}
+  deploymentPrefix: "ashish"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "s3:PutObject"
       Resource:
-        - "arn:aws:s3:::${self:custom.bucket}/*"
-  s3:
-    bucket:
-      name: ${self:custom.bucket}
-      existing: true
-      # Eventual additional properties in camel case
+        - "arn:aws:s3:::${opt:bucketName}/*"
 
-# The `functions` block defines what code to deploy
 # The `functions` block defines what code to deploy
 functions:
   helloWorld:
@@ -33,9 +29,3 @@ functions:
           path: hello-world
           method: get
           cors: true
-resources:
-  Resources:
-    StorageBucket:
-      Type: "AWS::S3::Bucket"
-      Properties:
-        BucketName: ${self:custom.bucket}

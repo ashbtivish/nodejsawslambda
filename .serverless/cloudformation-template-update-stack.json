@@ -2,64 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "The AWS CloudFormation template for this Serverless application",
   "Resources": {
-    "ServerlessDeploymentBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        }
-      }
-    },
-    "ServerlessDeploymentBucketPolicy": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "ServerlessDeploymentBucket"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Effect": "Deny",
-              "Principal": "*",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "ServerlessDeploymentBucket"
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ],
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": false
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
     "HelloWorldLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/nodejsawslambda-UAT-helloWorld"
+        "LogGroupName": "/aws/lambda/nodejsawslambda-dev-helloWorld"
       }
     },
     "IamRoleLambdaExecution": {
@@ -87,7 +33,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "UAT",
+                  "dev",
                   "nodejsawslambda",
                   "lambda"
                 ]
@@ -104,7 +50,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nodejsawslambda-UAT*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nodejsawslambda-dev*:*"
                     }
                   ]
                 },
@@ -115,7 +61,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nodejsawslambda-UAT*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nodejsawslambda-dev*:*:*"
                     }
                   ]
                 },
@@ -125,7 +71,7 @@
                     "s3:PutObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::nodejsawslambdaartifact/*"
+                    "arn:aws:s3:::nodejscodeartifact/*"
                   ]
                 }
               ]
@@ -138,7 +84,7 @@
             "-",
             [
               "nodejsawslambda",
-              "UAT",
+              "dev",
               {
                 "Ref": "AWS::Region"
               },
@@ -152,12 +98,10 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "S3Bucket": {
-            "Ref": "ServerlessDeploymentBucket"
-          },
-          "S3Key": "serverless/nodejsawslambda/UAT/1582188339753-2020-02-20T08:45:39.753Z/nodejsawslambda.zip"
+          "S3Bucket": "nodejscodeartifact",
+          "S3Key": "ashish/nodejsawslambda/dev/1582258777623-2020-02-21T04:19:37.623Z/nodejsawslambda.zip"
         },
-        "FunctionName": "nodejsawslambda-UAT-helloWorld",
+        "FunctionName": "nodejsawslambda-dev-helloWorld",
         "Handler": "handler.helloWorld",
         "MemorySize": 1024,
         "Role": {
@@ -174,20 +118,20 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "HelloWorldLambdaVersionFnPzyvuboBdDEwVGcKqo9PYoIX4EyY8gLU7WSCiURA": {
+    "HelloWorldLambdaVersionT2XjRgQL2iBaFMRLkiTSApEnPG59WL0u4i7mEDpW8": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloWorldLambdaFunction"
         },
-        "CodeSha256": "glQOz0upD4Hr9Xj1Ae0XJGizqR+g9rGwqPOnbt/MV2w="
+        "CodeSha256": "K3JFI1YI5y596ZEEg6PzOlCImpYKYtpLHJHu6phcCeg="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "UAT-nodejsawslambda",
+        "Name": "dev-nodejsawslambda",
         "EndpointConfiguration": {
           "Types": [
             "EDGE"
@@ -299,13 +243,13 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1582188338213": {
+    "ApiGatewayDeployment1582258775974": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         },
-        "StageName": "UAT"
+        "StageName": "dev"
       },
       "DependsOn": [
         "ApiGatewayMethodHelloDashworldOptions",
@@ -348,24 +292,16 @@
           ]
         }
       }
-    },
-    "StorageBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": "nodejsawslambdaartifact"
-      }
     }
   },
   "Outputs": {
     "ServerlessDeploymentBucketName": {
-      "Value": {
-        "Ref": "ServerlessDeploymentBucket"
-      }
+      "Value": "nodejscodeartifact"
     },
     "HelloWorldLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloWorldLambdaVersionFnPzyvuboBdDEwVGcKqo9PYoIX4EyY8gLU7WSCiURA"
+        "Ref": "HelloWorldLambdaVersionT2XjRgQL2iBaFMRLkiTSApEnPG59WL0u4i7mEDpW8"
       }
     },
     "ServiceEndpoint": {
@@ -386,7 +322,7 @@
             {
               "Ref": "AWS::URLSuffix"
             },
-            "/UAT"
+            "/dev"
           ]
         ]
       }
